@@ -8,7 +8,6 @@ import ListEmployeeComponent from './listEmployeeComponent'
 function App() {
  return (
         <div>
-        <HelloWorld/>
         <ListEmployeeComponent/>
         </div>
   )
