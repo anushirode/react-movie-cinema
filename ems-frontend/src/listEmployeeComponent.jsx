@@ -3,14 +3,14 @@ import React, { useState, useEffect } from "react";
 // import { listEmployees } from "./services/listEmployee";
 import axios from "axios";
 
-const GET_ALL_CINEMAS = "http://localhost:8084/cinema/allcinema";
-// const GET_ALL_CINEMAS = "http://localhost:8084/movies/all";
+// const GET_ALL_CINEMAS = "http://localhost:8084/cinema/allcinema";
+const GET_ALL_CINEMAS = "http://localhost:8084/movies/all";
 
 function ListEmployeeComponent() {
   const [cinemaHallDetails, setCinemaHallDetails] = useState([]);
-  const [newDetail, setNewDetail] = useState({});
-  const [cinema_name, setcinema_name] = useState({});
-  const [movie_name, setmovie_name] = useState({});
+  // const [newDetail, setNewDetail] = useState({});
+  const [cinema_name, setcinema_name] = useState("");
+  const [movie_name, setmovie_name] = useState("");
   const [reload, setReload] = useState(false);
 
   // useEffect(()=>{listEmployees?.then((response) => {setEmployee(response.data);}).catch(error => console.error(error));},[])
@@ -18,21 +18,26 @@ function ListEmployeeComponent() {
     axios
       .get(GET_ALL_CINEMAS)
       .then((res) => {
-        console.log("-->", res.data);
+        // console.log("-->", res.data);
         setCinemaHallDetails(res.data);
-        res.data.map((each_cinema, index) => {
-          // console.log(i.cinema_name)
-          each_cinema.movies.map((each_movie) => {
-            console.log(index, each_cinema.cinema_name, each_movie.movie_name);
-          });
-        });
+        // res.data.map((movieee, index_moviee) => {
+        //   // console.log(i.cinema_name)
+        //   movieee.cinemas.map((cinemaa, index_cinema) => {
+        //     console.log(index_moviee, movieee.movie_name, cinemaa.cinema_name);
+        //     let key = {
+        //       a: movieee.movie_name,
+        //       // index_cinema
+        //     };
+        //     console.log("KEYYY ", key);
+        //   });
+        // });
       })
       .catch((err) => console.log("ERR", err));
     // console.log("VAL OF", listEmployees);
   }, [setCinemaHallDetails, reload]);
 
   const onChange = (e) => {
-    console.log(e.target.name, e.target.value, Object.keys(newDetail).length);
+    // console.log(e.target.name, e.target.value, Object.keys(newDetail).length);
     if (e.target.name === "cinema_name") {
       setcinema_name(e.target.value);
     } else {
@@ -45,15 +50,25 @@ function ListEmployeeComponent() {
   };
 
   const onClick = (e) => {
-    // console.log("===",movie_name);
+    // console.log(
+    //   "===",
+    //   movie_name,
+    //   typeof movie_name,
+    //   cinema_name,
+    //   typeof cinema_name
+    // );
 
-    const movies = [{ movie_name: movie_name }];
-    const final_data = { cinema_name, movies };
-    console.log(final_data);
+    const cinemas = [{ cinema_name: cinema_name }];
+    const final_data = { movie_name, cinemas };
+    // setcinema_name({});
+    // setmovie_name({});
+    // console.log(final_data);
     axios
-      .post("http://localhost:8084/cinema/add", final_data)
+      .post("http://localhost:8084/movies/addmovie", final_data)
       .then((res) => {
-        console.log("Send data ", res);
+        // console.log("Send data ", res);
+        setcinema_name("");
+        setmovie_name("");
         setReload(!reload);
       })
       .catch((err) => console.log("ERR", err));
@@ -72,26 +87,20 @@ function ListEmployeeComponent() {
             </tr>
           </thead>
           <tbody>
-            {cinemaHallDetails.map((each_cinema, index_cinema) =>
-              each_cinema.movies.map(
-                (each_movie) => (
-                  <tr
-                    key={
-                      each_cinema.cinema_name +
-                      index_cinema +
-                      each_movie.movie_name
-                    }
-                  >
-                    <td>{each_cinema?.cinema_name}</td>
-                    <td>{each_movie?.movie_name}</td>
-                  </tr>
-                )
-                // console.log(
-                //   index,
-                //   each_cinema.cinema_name,
-                //   each_movie.movie_name
-                // )
-              )
+            {cinemaHallDetails.map((movieee, index_moviee) =>
+              movieee.cinemas.map((cinemaa, index_cinema) => (
+                <tr
+                  key={
+                    movieee.movie_name +
+                    index_moviee +
+                    cinemaa.cinema_name +
+                    index_cinema
+                  }
+                >
+                  <td>{cinemaa?.cinema_name}</td>
+                  <td>{movieee?.movie_name}</td>
+                </tr>
+              ))
             )}
           </tbody>
         </table>
@@ -103,7 +112,7 @@ function ListEmployeeComponent() {
           className="inputTag"
           // type={type}
           name="cinema_name"
-          value={cinema_name?.cinema_name}
+          value={cinema_name}
           onChange={onChange}
           placeholder="Add New Cinema Hall"
         />
@@ -112,7 +121,7 @@ function ListEmployeeComponent() {
           className="inputTag"
           // type={type}
           name="movie_name"
-          value={movie_name?.movie_name}
+          value={movie_name}
           onChange={onChange}
           placeholder="Add New Cinema Hall"
         />
